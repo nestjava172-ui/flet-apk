@@ -14,7 +14,6 @@ def main(page: ft.Page):
         txt_hasil = ft.TextField(
             value="0000",
             text_size=60,
-            weight=ft.FontWeight.BOLD,
             text_align=ft.TextAlign.CENTER,
             max_length=4,
             input_filter=ft.NumbersOnlyInputFilter(),
