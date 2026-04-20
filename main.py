@@ -13,7 +13,7 @@ def main(page: ft.Page):
     hasil_list = []
     log_file = "log_undian.txt"
 
-    txt_hasil = ft.Text("0000", size=60, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.CENTER)
+    txt_hasil = ft.TextField(value="0000",text_size=60,weight=ft.FontWeight.BOLD,text_align=ft.TextAlign.CENTER,max_length=4,input_filter=ft.InputFilter(allow=True, regex_string=r"[0-9]", replacement_string=""),border=ft.InputBorder.NONE,filled=True,bgcolor=ft.Colors.BLACK26)
     txt_info = ft.Text("Tekan tombol untuk mulai undi", size=14, color=ft.Colors.GREY_400)
     list_log = ft.ListView(expand=True, spacing=5, auto_scroll=True)
     chart_angka = ft.BarChart(max_y=10, expand=True)
@@ -68,6 +68,17 @@ def main(page: ft.Page):
             content=ft.Column([
                 ft.Text("MESIN RNG 4D", size=24, weight=ft.FontWeight.BOLD),
                 txt_hasil,
+                ft.Container(
+    content=ft.Column([
+        ft.Text("MESIN RNG 4D", size=24, weight=ft.FontWeight.BOLD),
+        txt_hasil,
+        ft.ElevatedButton("Simpan Angka Manual", on_click=simpan_manual, expand=True, icon=ft.Icons.SAVE),
+        txt_info,
+        ft.Row([
+            ft.ElevatedButton("Undi 1x", on_click=lambda e: undi(e, 1), expand=True),
+            ft.ElevatedButton("Undi 10x", on_click=lambda e: undi(e, 10), expand=True),
+            ft.ElevatedButton("Undi 100x", on_click=lambda e: undi(e, 100), expand=True),
+        ]),
                 txt_info,
                 ft.Row([
                     ft.ElevatedButton("Undi 1x", on_click=lambda e: undi(e, 1), expand=True),
@@ -86,6 +97,20 @@ def main(page: ft.Page):
             padding=15
         )
     )
-    update_chart()
+    def simpan_manual(e):
+        angka = txt_hasil.value
+        if len(angka) == 4 and angka.isdigit():
+            hasil_list.append(angka)
+            waktu = datetime.now().strftime("%H:%M:%S")
+            list_log.controls.insert(0, ft.Text(f"[{waktu}] {angka} - Manual", size=13))
+            txt_info.value = f"Total undian: {len(hasil_list)}"
+            with open(log_file, "a") as f:
+                f.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {angka} - Manual\n")
+            if len(list_log.controls) > 50:
+                list_log.controls = list_log.controls[:50]
+            update_chart()
+        else:
+            txt_info.value = "Error: Masukkan 4 digit angka!"
+            page.update())
 
 ft.app(target=main)
