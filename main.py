@@ -96,6 +96,30 @@ def main(page: ft.Page):
             ], horizontal_alignment=ft.CrossAxisAlignment.CENTER),
             padding=15
         )
+        page.add(
+        ft.Container(
+            padding=15,
+            content=ft.Column([
+                ft.Text("MESIN RNG 4D", size=24, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.CENTER),
+                txt_hasil,
+                ft.ElevatedButton("Simpan Angka Manual", on_click=simpan_manual, expand=True, icon=ft.Icons.SAVE),
+                txt_info,
+                ft.Row([
+                    ft.ElevatedButton("Undi 1x", on_click=lambda e: undi(e, 1), expand=True),
+                    ft.ElevatedButton("Undi 10x", on_click=lambda e: undi(e, 10), expand=True),
+                    ft.ElevatedButton("Undi 100x", on_click=lambda e: undi(e, 100), expand=True),
+                ]),
+                ft.Divider(),
+                ft.Text("Statistik Digit Terakhir", weight=ft.FontWeight.BOLD),
+                ft.Container(chart_angka, height=150),
+                ft.Divider(),
+                ft.Row([
+                    ft.Text("Log Hasil", weight=ft.FontWeight.BOLD, expand=True),
+                    ft.IconButton(icon=ft.Icons.DELETE_FOREVER, on_click=reset_data, tooltip="Reset")
+                ]),
+                ft.Container(list_log, height=200, border=ft.border.all(1, ft.Colors.GREY_700), border_radius=5, padding=5)
+            ], spacing=10)
+        )
     )
     def simpan_manual(e):
         angka = txt_hasil.value
