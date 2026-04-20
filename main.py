@@ -182,4 +182,49 @@ ft.app(target=main    def simpan_manual(e):
     load_data()
     page.update()
 
+ft.app(target=main)    def simpan_manual(e):
+        angka = txt_hasil.value
+        if len(angka) == 4 and angka.isdigit():
+            hasil_list.append(angka)
+            waktu = datetime.now().strftime("%H:%M:%S")
+            list_log.controls.insert(0, ft.Text(f"[{waktu}] {angka} - Manual", size=13))
+            txt_info.value = f"Total undian: {len(hasil_list)}"
+            with open(log_file, "a") as f:
+                f.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {angka} - Manual\n")
+            if len(list_log.controls) > 50:
+                list_log.controls = list_log.controls[:50]
+            update_chart()
+        else:
+            txt_info.value = "Error: Masukkan 4 digit angka!"
+        page.update()
+
+    page.add(
+        ft.Container(
+            padding=15,
+            content=ft.Column([
+                ft.Text("MESIN RNG 4D", size=24, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.CENTER),
+                txt_hasil,
+                ft.ElevatedButton("Simpan Angka Manual", on_click=simpan_manual, expand=True, icon=ft.Icons.SAVE),
+                txt_info,
+                ft.Row([
+                    ft.ElevatedButton("Undi 1x", on_click=lambda e: undi(e, 1), expand=True),
+                    ft.ElevatedButton("Undi 10x", on_click=lambda e: undi(e, 10), expand=True),
+                    ft.ElevatedButton("Undi 100x", on_click=lambda e: undi(e, 100), expand=True),
+                ]),
+                ft.Divider(),
+                ft.Text("Statistik Digit Terakhir", weight=ft.FontWeight.BOLD),
+                ft.Container(chart_angka, height=150),
+                ft.Divider(),
+                ft.Row([
+                    ft.Text("Log Hasil", weight=ft.FontWeight.BOLD, expand=True),
+                    ft.IconButton(icon=ft.Icons.DELETE_FOREVER, on_click=reset_data, tooltip="Reset")
+                ]),
+                ft.Container(list_log, height=200, border=ft.border.all(1, ft.Colors.GREY_700), border_radius=5, padding=5)
+            ], spacing=10)
+        )
+    )
+    
+    load_data()
+    page.update()
+
 ft.app(target=main))
